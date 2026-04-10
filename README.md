@@ -1,59 +1,65 @@
-# NutryonAngular
+# Nutryon Angular - Frontend
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.1.3.
+Interface moderna e responsiva para o sistema **Nutryon**, focada no acompanhamento nutricional dinâmico, planejamento de refeições e visualização de macronutrientes.
 
-## Development server
+## 👥 Integrantes
+- **Renato** (RM560928)
+- **Victor** (RM560087)
+- **Luan Noqueli Klochko** (RM560313)
+- **Lucas Higuti Fontanezi** (RM561120)
 
-To start a local development server, run:
+---
 
+## 🔗 Projeto Conectado (Backend)
+Esta aplicação consome a API desenvolvida em Java Spring Boot disponível em:
+👉 [https://github.com/VoyDcode/Nutryon](https://github.com/VoyDcode/Nutryon)
+
+---
+
+## 🚀 Instruções de Instalação e Execução
+
+### Pré-requisitos
+- **Node.js**: v18 ou superior.
+- **Angular CLI**: v19+.
+- **Backend Nutryon**: Deve estar rodando na porta `8080` (ou conforme configurado no proxy).
+
+### 1. Instalação de Dependências
+Abra o terminal na pasta raiz do projeto e execute:
+```bash
+npm install
+```
+
+### 2. Configuração de Proxy (CORS)
+O projeto está configurado para utilizar um proxy reverso para evitar problemas de CORS com o backend. O arquivo `proxy.conf.json` direciona as chamadas `/api` e `/auth` para `http://localhost:8080`.
+
+### 3. Execução do Servidor de Desenvolvimento
+Para iniciar a aplicação, utilize o comando:
+```bash
+npm run start
+```
+ou
 ```bash
 ng serve
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+### 4. Acesso à Aplicação
+Após o build inicial, a aplicação estará disponível no endereço:
+👉 **[http://localhost:4200/](http://localhost:4200/)**
 
-## Code scaffolding
+---
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+## 🛠️ Tecnologias Utilizadas
+- **Angular 19+** (Standalone Components)
+- **Tailwind CSS v4** (Design System & Estilização)
+- **Lucide Angular** (Ícones)
+- **RxJS** (Comunicação Assíncrona via HttpClient)
+- **PostCSS** (Processamento de estilos)
 
-```bash
-ng generate component component-name
-```
+---
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+## 📈 Funcionalidades Implementadas
+- **Dashboard Dinâmico**: Visualização de progresso diário de calorias e macros.
+- **Registro de Refeições**: Integração com as procedures do backend para criação de ingredientes e vínculos de refeição.
+- **Autenticação (JWT)**: Login e Registro integrados com o Spring Security do backend.
+- **Onboarding Personalizado**: Coleta de dados físicos e definição de metas salvos localmente.
+- **Relatórios**: Histórico semanal e evolução nutricional.
