@@ -1,0 +1,155 @@
+<div class="min-h-screen flex flex-col max-w-lg mx-auto bg-surface relative overflow-hidden">
+  
+  <header class="fixed top-0 w-full max-w-lg z-50 glass-header flex items-center justify-between px-6 h-16">
+    <button *ngIf="step > 1" (click)="prevStep()" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container-low transition-colors active:scale-95">
+      <lucide-icon name="ChevronLeft" class="w-6 h-6 flex"></lucide-icon>
+    </button>
+    <div *ngIf="step === 1" class="w-10"></div>
+    
+    <div class="flex flex-col items-center">
+      <span class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest mb-1">
+        Passo {{ step }} de {{ totalSteps }}
+      </span>
+      <div class="h-1 w-24 bg-surface-container rounded-full overflow-hidden relative">
+        <div class="absolute left-0 top-0 h-full bg-primary rounded-full transition-all duration-300" [style.width.%]="progress"></div>
+      </div>
+    </div>
+    
+    <div class="w-10"></div>
+  </header>
+
+  <main class="flex-1 pt-24 pb-32 px-8 flex flex-col animate-fade-in-up">
+    
+    <!-- Step 1 -->
+    <ng-container *ngIf="step === 1">
+      <div class="text-center mb-10">
+        <h1 class="text-3xl font-bold text-on-surface mb-4">Qual é o seu gênero?</h1>
+        <p class="text-on-surface-variant text-base">Isso nos ajuda a personalizar sua experiência.</p>
+      </div>
+      <div class="flex flex-col gap-4">
+        <button 
+          (click)="updateField('gender', 'female')"
+          [class.border-primary]="data.gender === 'female'"
+          [class.border-transparent]="data.gender !== 'female'"
+          class="w-full bg-surface-container-lowest border-2 rounded-3xl p-8 flex flex-col items-center justify-center relative ambient-shadow transition-all">
+          <div class="w-14 h-14 rounded-full bg-surface-container-low flex items-center justify-center text-primary mb-4">
+            <lucide-icon name="User" class="w-8 h-8 flex"></lucide-icon>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-xl font-bold text-on-surface">Mulher</span>
+            <lucide-icon *ngIf="data.gender === 'female'" name="CheckCircle2" class="w-5 h-5 text-primary fill-primary text-white flex"></lucide-icon>
+          </div>
+        </button>
+        <button 
+          (click)="updateField('gender', 'male')"
+          [class.border-primary]="data.gender === 'male'"
+          [class.border-transparent]="data.gender !== 'male'"
+          class="w-full bg-surface-container-lowest border-2 rounded-3xl p-8 flex flex-col items-center justify-center relative ambient-shadow transition-all">
+          <div class="w-14 h-14 rounded-full bg-surface-container-low flex items-center justify-center text-primary mb-4">
+            <lucide-icon name="User" class="w-8 h-8 flex"></lucide-icon>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-xl font-bold text-on-surface">Homem</span>
+            <lucide-icon *ngIf="data.gender === 'male'" name="CheckCircle2" class="w-5 h-5 text-primary fill-primary text-white flex"></lucide-icon>
+          </div>
+        </button>
+      </div>
+    </ng-container>
+
+    <!-- Step 2 -->
+    <ng-container *ngIf="step === 2">
+      <div class="mb-12">
+        <h1 class="text-3xl font-bold text-on-surface mb-3 tracking-tight">Qual a sua idade?</h1>
+        <p class="text-on-surface-variant text-base leading-relaxed">Personalizamos sua experiência com base na sua fase de vida.</p>
+      </div>
+      <div class="flex flex-col items-center justify-center flex-1">
+        <input 
+          type="range" min="10" max="100" [(ngModel)]="data.age" 
+          class="w-full h-2 bg-surface-container rounded-lg appearance-none cursor-pointer accent-primary"
+        />
+        <span class="text-[80px] font-black text-primary mt-8">{{ data.age }}</span>
+      </div>
+    </ng-container>
+
+    <!-- Step 3 -->
+    <ng-container *ngIf="step === 3">
+      <div class="text-center mb-10">
+        <h1 class="text-3xl font-bold tracking-tight text-on-surface mb-3">Qual a sua altura?</h1>
+      </div>
+      <div class="flex flex-col items-center flex-1">
+        <div class="flex items-baseline gap-1 mb-10">
+          <span class="text-[64px] font-bold tracking-tighter text-on-surface leading-none">{{ data.height }}</span>
+          <span class="text-xl font-bold text-primary">cm</span>
+        </div>
+        <input 
+          type="range" min="100" max="250" [(ngModel)]="data.height"
+          class="w-full h-2 bg-surface-container rounded-lg appearance-none cursor-pointer accent-primary"
+        />
+      </div>
+    </ng-container>
+
+    <!-- Step 4 -->
+    <ng-container *ngIf="step === 4">
+      <h1 class="text-3xl font-bold text-on-surface tracking-tight mb-4">Qual o seu peso atual?</h1>
+      <div class="flex flex-col items-center flex-1">
+        <div class="flex items-baseline gap-1 mb-10">
+          <span class="text-[64px] font-bold tracking-tighter text-on-surface leading-none">{{ data.weight }}</span>
+          <span class="text-xl font-bold text-primary">kg</span>
+        </div>
+        <input 
+          type="range" min="30" max="200" [(ngModel)]="data.weight"
+          class="w-full h-2 bg-surface-container rounded-lg appearance-none cursor-pointer accent-primary"
+        />
+      </div>
+    </ng-container>
+
+    <!-- Step 5 -->
+    <ng-container *ngIf="step === 5">
+      <h1 class="text-2xl font-bold text-on-surface tracking-tight mb-2">Qual seu nível de atividade?</h1>
+      <div class="space-y-3 mt-6 w-full">
+        <button 
+          *ngFor="let opt of activityOptions"
+          (click)="updateField('activityLevel', opt.id)"
+          [class.border-primary]="data.activityLevel === opt.id"
+          [class.bg-primary-5]="data.activityLevel === opt.id"
+          [class.border-surface-container-high]="data.activityLevel !== opt.id"
+          class="w-full text-left p-5 bg-white rounded-xl border transition-all"
+        >
+          <h3 class="font-bold text-on-surface">{{ opt.title }}</h3>
+          <p class="text-xs text-on-surface-variant">{{ opt.desc }}</p>
+        </button>
+      </div>
+    </ng-container>
+
+    <!-- Step 6 -->
+    <ng-container *ngIf="step === 6">
+      <h2 class="text-2xl font-bold text-on-surface mb-2">Selecione o seu objetivo</h2>
+      <div class="space-y-3 mt-6 w-full">
+        <button 
+          *ngFor="let opt of goalOptions"
+          (click)="updateField('goal', opt.id)"
+          [class.border-primary]="data.goal === opt.id"
+          [class.bg-primary-5]="data.goal === opt.id"
+          [class.border-surface-container-high]="data.goal !== opt.id"
+          class="w-full text-left p-5 bg-white rounded-xl border transition-all"
+        >
+          <h3 class="font-bold text-on-surface">{{ opt.title }}</h3>
+          <p class="text-xs text-on-surface-variant">{{ opt.desc }}</p>
+        </button>
+      </div>
+    </ng-container>
+
+  </main>
+
+  <footer class="fixed bottom-0 left-0 right-0 w-full max-w-lg mx-auto p-8 bg-surface/80 backdrop-blur-md z-50">
+    <button 
+      (click)="nextStep()"
+      [disabled]="isNextDisabled()"
+      class="w-full primary-gradient py-5 rounded-2xl text-white font-bold text-lg shadow-lg shadow-primary/20 flex items-center justify-center gap-2 transition-all active:scale-[0.98] hover:brightness-110 disabled:opacity-50"
+    >
+      <span>{{ step === totalSteps ? 'Finalizar' : 'Próximo passo' }}</span>
+      <lucide-icon name="ArrowRight" class="w-5 h-5 flex"></lucide-icon>
+    </button>
+  </footer>
+
+</div>

@@ -1,0 +1,79 @@
+<div class="bg-surface min-h-screen pb-32 animate-fade-in-up">
+  <header class="fixed top-0 w-full z-50 glass-header ambient-shadow">
+    <div class="flex justify-between items-center px-6 py-4 w-full max-w-lg mx-auto">
+      <a routerLink="/" class="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-surface-container-low transition-colors">
+        <lucide-icon name="ChevronLeft" class="w-6 h-6 text-primary flex"></lucide-icon>
+      </a>
+      <h1 class="font-bold text-xl tracking-tight text-primary">Relatórios</h1>
+      <button class="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-surface-container-low transition-colors outline-none">
+        <lucide-icon name="Calendar" class="w-5 h-5 text-primary flex"></lucide-icon>
+      </button>
+    </div>
+  </header>
+
+  <main class="pt-24 px-6 max-w-lg mx-auto space-y-8">
+    <!-- Weekly Calories Chart (Simulated with Tailwind) -->
+    <section class="bg-white p-6 rounded-3xl ambient-shadow">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="bg-primary/10 p-2 rounded-xl">
+          <lucide-icon name="TrendingUp" class="w-5 h-5 text-primary flex"></lucide-icon>
+        </div>
+        <h2 class="font-bold text-lg">Calorias Semanais</h2>
+      </div>
+      
+      <div class="h-64 w-full flex items-end justify-between px-2 gap-2 relative border-b border-surface-container">
+        <!-- Lines for aesthetic -->
+        <div class="absolute inset-x-0 bottom-1/4 border-b border-dashed border-surface-container z-0"></div>
+        <div class="absolute inset-x-0 bottom-2/4 border-b border-dashed border-surface-container z-0"></div>
+        <div class="absolute inset-x-0 bottom-3/4 border-b border-dashed border-surface-container z-0"></div>
+
+        <div *ngFor="let item of calorieData" class="flex flex-col items-center flex-1 z-10 h-full justify-end group">
+          <!-- Tooltip simulation -->
+          <div class="opacity-0 group-hover:opacity-100 transition-opacity mb-2 bg-surface text-xs font-bold text-primary p-1 rounded whitespace-nowrap ambient-shadow">
+            {{ item.kcal }}
+          </div>
+          <div 
+            class="w-full rounded-t-md transition-all duration-500 hover:brightness-110" 
+            [ngClass]="item.kcal > 2200 ? 'bg-primary' : 'bg-primary-container'"
+            [style.height]="getBarHeight(item.kcal)"
+          ></div>
+          <span class="mt-2 text-xs text-on-surface-variant font-medium">{{ item.day }}</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Weight Evolution Chart -->
+    <section class="bg-white p-6 rounded-3xl ambient-shadow">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="bg-secondary/10 p-2 rounded-xl">
+          <lucide-icon name="Target" class="w-5 h-5 text-secondary flex"></lucide-icon>
+        </div>
+        <h2 class="font-bold text-lg">Evolução de Peso</h2>
+      </div>
+      
+      <div class="h-64 w-full flex flex-col justify-center text-center text-on-surface-variant border-2 border-dashed border-surface-container rounded-xl bg-surface-container-lowest">
+        <p class="font-bold">Gráfico de Linha</p>
+        <p class="text-xs max-w-[80%] mx-auto mt-2">Os dados da evolução de peso migrarão para os relatórios na versão web nativa usando SVGs ou bibliotecas Angular como o ng2-charts.</p>
+        <div class="flex justify-center gap-2 mt-4 text-xs font-bold text-secondary">
+           <span *ngFor="let w of weightData">{{ w.day }} ({{ w.kg }}kg)</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Stats Grid -->
+    <div class="grid grid-cols-2 gap-4">
+      <div class="bg-primary/5 p-6 rounded-3xl border border-primary/10">
+        <p class="text-xs font-bold text-primary uppercase tracking-widest mb-1">Média Diária</p>
+        <h3 class="text-2xl font-black text-primary">2.321</h3>
+        <p class="text-[10px] text-primary/60 mt-1">+5% vs semana anterior</p>
+      </div>
+      <div class="bg-secondary/5 p-6 rounded-3xl border border-secondary/10">
+        <p class="text-xs font-bold text-secondary uppercase tracking-widest mb-1">Peso Perdido</p>
+        <h3 class="text-2xl font-black text-secondary">1.5 kg</h3>
+        <p class="text-[10px] text-secondary/60 mt-1">Meta: 5.0 kg</p>
+      </div>
+    </div>
+  </main>
+
+  <app-bottom-nav active="reports"></app-bottom-nav>
+</div>

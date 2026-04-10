@@ -1,0 +1,106 @@
+<div class="bg-surface min-h-screen pb-32 animate-fade-in-up">
+  <header class="fixed top-0 w-full z-50 glass-header ambient-shadow">
+    <div class="flex justify-between items-center px-6 py-4 w-full max-w-lg mx-auto">
+      <a routerLink="/" class="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-surface-container-low transition-colors">
+        <lucide-icon name="ChevronLeft" class="w-6 h-6 text-primary flex"></lucide-icon>
+      </a>
+      <h1 class="font-bold text-xl tracking-tight text-primary">Perfil</h1>
+      <button 
+        (click)="logout()"
+        class="w-10 h-10 bg-red-50 text-red-500 flex items-center justify-center rounded-xl hover:bg-red-100 transition-all active:scale-95 outline-none"
+      >
+        <lucide-icon name="LogOut" class="w-5 h-5 flex"></lucide-icon>
+      </button>
+    </div>
+  </header>
+
+  <main class="pt-24 px-6 max-w-lg mx-auto space-y-8">
+    <div class="flex flex-col items-center">
+      <div class="w-24 h-24 rounded-full overflow-hidden bg-primary-container ambient-shadow mb-4">
+        <img 
+          alt="User profile" 
+          [src]="'https://picsum.photos/seed/' + (user?.id || 'demo') + '/200/200'" 
+          referrerPolicy="no-referrer"
+          class="w-full h-full object-cover"
+        />
+      </div>
+      <h2 class="text-2xl font-bold text-on-surface">{{ user?.name }}</h2>
+      <p class="text-on-surface-variant">{{ user?.email }}</p>
+    </div>
+
+    <form (ngSubmit)="handleSubmit()" class="space-y-6 bg-white p-8 rounded-3xl ambient-shadow">
+      <div class="space-y-4">
+        <div class="space-y-1">
+          <label class="text-xs font-bold text-on-surface-variant uppercase tracking-widest">Nome</label>
+          <input 
+            type="text" [(ngModel)]="formData.name" name="name"
+            class="w-full bg-surface-container-low border-0 px-4 py-3 rounded-xl focus:ring-2 focus:ring-primary/20 outline-none"
+          />
+        </div>
+        <div class="space-y-1">
+          <label class="text-xs font-bold text-on-surface-variant uppercase tracking-widest">E-mail</label>
+          <input 
+            type="email" [(ngModel)]="formData.email" name="email" disabled
+            class="w-full bg-surface-container-low border-0 px-4 py-3 rounded-xl opacity-50"
+          />
+        </div>
+        <div class="grid grid-cols-3 gap-4">
+          <div class="space-y-1">
+            <label class="text-xs font-bold text-on-surface-variant uppercase tracking-widest">Idade</label>
+            <input 
+              type="number" [(ngModel)]="formData.age" name="age"
+              class="w-full bg-surface-container-low border-0 px-4 py-3 rounded-xl focus:ring-2 focus:ring-primary/20 outline-none"
+            />
+          </div>
+          <div class="space-y-1">
+            <label class="text-xs font-bold text-on-surface-variant uppercase tracking-widest">Altura</label>
+            <input 
+              type="number" [(ngModel)]="formData.height" name="height"
+              class="w-full bg-surface-container-low border-0 px-4 py-3 rounded-xl focus:ring-2 focus:ring-primary/20 outline-none"
+            />
+          </div>
+          <div class="space-y-1">
+            <label class="text-xs font-bold text-on-surface-variant uppercase tracking-widest">Peso</label>
+            <input 
+              type="number" [(ngModel)]="formData.weight" name="weight"
+              class="w-full bg-surface-container-low border-0 px-4 py-3 rounded-xl focus:ring-2 focus:ring-primary/20 outline-none"
+            />
+          </div>
+        </div>
+      </div>
+
+      <button 
+        type="submit"
+        [disabled]="isPending"
+        [class.bg-green-500]="isSaved"
+        [class.text-white]="isSaved"
+        [class.primary-gradient]="!isSaved"
+        [class.shadow-lg]="!isSaved"
+        [class.shadow-primary-20]="!isSaved"
+        class="w-full py-4 rounded-2xl font-bold flex items-center justify-center gap-2 transition-all active:scale-[0.98] outline-none"
+      >
+        <ng-container *ngIf="isSaved">
+          <lucide-icon name="CheckCircle2" class="w-5 h-5 flex"></lucide-icon>
+          Salvo com sucesso!
+        </ng-container>
+        <ng-container *ngIf="!isSaved">
+          <lucide-icon name="Save" class="w-5 h-5 flex"></lucide-icon>
+          {{ isPending ? 'Salvando...' : 'Salvar Alterações' }}
+        </ng-container>
+      </button>
+    </form>
+
+    <div class="bg-surface-container-low p-6 rounded-3xl border-2 border-dashed border-surface-container">
+      <h3 class="font-bold text-on-surface mb-2">Configurações de Dieta</h3>
+      <p class="text-sm text-on-surface-variant mb-4">
+        Seu objetivo atual é: 
+        <span class="text-primary font-bold">
+          {{ user?.goal === 'lose' ? 'Perder peso' : user?.goal === 'gain' ? 'Ganhar peso' : 'Manter peso' }}
+        </span>
+      </p>
+      <a routerLink="/onboarding" class="text-primary font-bold text-sm hover:underline">Refazer Onboarding</a>
+    </div>
+  </main>
+
+  <app-bottom-nav active="profile"></app-bottom-nav>
+</div>

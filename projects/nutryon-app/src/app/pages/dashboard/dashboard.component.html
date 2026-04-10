@@ -1,0 +1,111 @@
+<div class="bg-surface min-h-screen pb-32 animate-fade-in-up">
+  <header class="fixed top-0 w-full z-50 glass-header ambient-shadow">
+    <div class="flex justify-between items-center px-6 py-4 w-full max-w-lg mx-auto">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-full overflow-hidden bg-primary-container">
+          <img 
+            alt="User profile" 
+            [src]="'https://picsum.photos/seed/' + (user?.id || 'demo') + '/100/100'" 
+            referrerPolicy="no-referrer"
+            class="w-full h-full object-cover"
+          />
+          
+        </div>
+        <h1 class="font-bold text-xl tracking-tight text-primary">Olá, {{ getFirstWord(user?.name) }}</h1>
+      </div>
+      <button class="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-surface-container-low transition-colors active:scale-95 focus:outline-none">
+        <lucide-icon name="Calendar" class="w-5 h-5 text-primary flex"></lucide-icon>
+      </button>
+    </div>
+  </header>
+
+  <main class="pt-24 px-6 max-w-lg mx-auto space-y-8">
+    <!-- Hero Section: Circular Progress -->
+    <section class="bg-surface-container-lowest rounded-xl p-8 ambient-shadow flex flex-col items-center">
+      <div class="relative w-64 h-64 flex items-center justify-center">
+        <div class="absolute inset-0 rounded-full border-[16px] border-surface-container-low"></div>
+        <div 
+          class="absolute inset-0 rounded-full border-[16px] border-primary border-t-transparent border-l-transparent transition-all duration-1000" 
+          [style.transform]="'rotate(' + (45 + (progress * 3.6)) + 'deg)'"
+        ></div>
+        <div class="text-center z-10">
+          <span class="block font-black text-5xl tracking-tighter text-on-surface">{{ consumedKcal }}</span>
+          <span class="block text-sm uppercase tracking-widest text-on-surface-variant">kcal totais</span>
+          <div class="mt-1 h-1 w-12 bg-primary mx-auto rounded-full opacity-20"></div>
+          <span class="block mt-1 text-sm text-primary font-semibold">Meta: {{ targetKcal }}</span>
+        </div>
+      </div>
+      
+      <div class="mt-8 space-y-6 w-full">
+        <div *ngFor="let macro of macros" class="space-y-2">
+          <div class="flex justify-between items-end">
+            <span class="font-bold text-xs uppercase tracking-wider text-on-surface-variant">{{ macro.label }}</span>
+            <span class="font-bold text-lg">{{ macro.val }} / {{ macro.target }}</span>
+          </div>
+          <div class="h-2 w-full bg-surface-container-low rounded-full overflow-hidden">
+            <div class="h-full rounded-full transition-all duration-1000" [ngClass]="macro.color" [style.width.%]="macro.progress"></div>
+          </div>
+          <p class="text-[11px] font-medium text-on-surface-variant">{{ macro.msg }}</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Meals Section -->
+    <section class="space-y-4">
+      <div class="flex justify-between items-center">
+        <h2 class="font-bold text-xl text-on-surface">Refeições de Hoje</h2>
+        <a routerLink="/meals" class="text-primary font-semibold text-sm hover:underline">Ver tudo</a>
+      </div>
+      
+      <div class="space-y-4">
+        <ng-container *ngIf="isLoading">
+          <p class="text-center text-on-surface-variant py-4">Carregando refeições...</p>
+        </ng-container>
+        
+        <ng-container *ngIf="!isLoading && meals.length === 0">
+          <div class="bg-surface-container-low p-8 rounded-xl text-center border-2 border-dashed border-surface-container">
+            <p class="text-on-surface-variant mb-4">Nenhuma refeição registrada hoje.</p>
+            <a routerLink="/meals" class="text-primary font-bold">Adicionar agora</a>
+          </div>
+        </ng-container>
+
+        <ng-container *ngIf="!isLoading && meals.length > 0">
+          <div *ngFor="let meal of meals.slice(0, 3)" class="bg-surface-container-lowest p-5 rounded-xl flex items-center gap-5 shadow-sm hover:ambient-shadow transition-all group">
+            <div class="w-16 h-16 rounded-xl overflow-hidden flex-shrink-0 bg-surface-container-low flex items-center justify-center">
+              <lucide-icon name="Plus" class="w-6 h-6 text-primary flex"></lucide-icon>
+            </div>
+            <div class="flex-grow">
+              <div class="flex justify-between items-start">
+                <div>
+                  <h3 class="font-bold text-base">{{ meal.name }}</h3>
+                  <p class="text-sm text-on-surface-variant">{{ meal.kcal }} kcal</p>
+                </div>
+              </div>
+              <div class="mt-2 flex gap-3">
+                <span class="px-2 py-0.5 bg-surface-container-low rounded text-[10px] font-bold text-on-surface-variant uppercase">P: {{ meal.protein }}g</span>
+                <span class="px-2 py-0.5 bg-surface-container-low rounded text-[10px] font-bold text-on-surface-variant uppercase">C: {{ meal.carbs }}g</span>
+                <span class="px-2 py-0.5 bg-surface-container-low rounded text-[10px] font-bold text-on-surface-variant uppercase">G: {{ meal.fat }}g</span>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+    </section>
+
+    <!-- Achievement Card -->
+    <section class="bg-gradient-to-br from-primary to-primary-dim rounded-xl p-6 text-white shadow-xl relative overflow-hidden">
+      <div class="flex items-start justify-between relative z-10">
+        <div class="space-y-1">
+          <h3 class="font-bold text-lg">Consistência é tudo!</h3>
+          <p class="text-sm opacity-90 leading-relaxed max-w-[80%]">Você bateu sua meta de proteínas nos últimos 4 dias. Mantenha o ritmo!</p>
+        </div>
+        <lucide-icon name="CheckCircle2" class="w-10 h-10 opacity-20 flex"></lucide-icon>
+      </div>
+      <button class="mt-4 bg-white/20 hover:bg-white/30 transition-colors px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider relative z-10">
+        Ver insights
+      </button>
+    </section>
+  </main>
+
+  <app-bottom-nav active="home"></app-bottom-nav>
+</div>

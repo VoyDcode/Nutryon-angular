@@ -1,0 +1,68 @@
+<div class="min-h-screen bg-surface flex flex-col items-center justify-center px-8">
+  <div class="w-full max-w-md animate-fade-in-up">
+    <div class="text-center mb-10">
+      <h1 class="text-4xl font-black tracking-tighter text-primary mb-2">Nutryon</h1>
+      <p class="text-on-surface-variant">Comece sua jornada hoje mesmo!</p>
+    </div>
+
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="space-y-6">
+      
+      <div class="space-y-2">
+        <label class="text-xs font-bold text-on-surface ml-1" for="name">Nome Completo</label>
+        <input 
+          class="w-full bg-surface-container-low border-0 px-4 py-4 rounded-xl focus:ring-2 focus:ring-primary/20 outline-none transition-all placeholder:text-on-surface-variant/40 text-on-surface" 
+          id="name" 
+          placeholder="Seu nome" 
+          type="text"
+          formControlName="name"
+        />
+      </div>
+
+      <div class="space-y-2">
+        <label class="text-xs font-bold text-on-surface ml-1" for="email">E-mail</label>
+        <input 
+          class="w-full bg-surface-container-low border-0 px-4 py-4 rounded-xl focus:ring-2 focus:ring-primary/20 outline-none transition-all placeholder:text-on-surface-variant/40 text-on-surface" 
+          id="email" 
+          placeholder="seu@email.com" 
+          type="email"
+          formControlName="email"
+        />
+      </div>
+
+      <div class="space-y-2">
+        <label class="text-xs font-bold text-on-surface ml-1" for="password">Senha</label>
+        <div class="relative">
+          <input 
+            class="w-full bg-surface-container-low border-0 px-4 py-4 rounded-xl focus:ring-2 focus:ring-primary/20 outline-none transition-all placeholder:text-on-surface-variant/40 text-on-surface" 
+            id="password" 
+            placeholder="Crie uma senha forte" 
+            [type]="showPassword ? 'text' : 'password'"
+            formControlName="password"
+          />
+          <button 
+            type="button"
+            (click)="togglePasswordVisibility()"
+            class="absolute right-4 top-1/2 -translate-y-1/2 text-primary focus:outline-none"
+          >
+            <lucide-icon [name]="showPassword ? 'EyeOff' : 'Eye'" class="w-5 h-5 flex"></lucide-icon>
+          </button>
+        </div>
+      </div>
+
+      <p *ngIf="error" class="text-red-500 text-xs text-center">{{ error }}</p>
+
+      <button 
+        type="submit"
+        [disabled]="isLoading || registerForm.invalid"
+        class="w-full primary-gradient py-5 rounded-2xl text-white font-bold text-lg shadow-lg shadow-primary/20 flex items-center justify-center gap-2 transition-all active:scale-[0.98] hover:brightness-110 disabled:opacity-50"
+      >
+        <span>{{ isLoading ? 'Criando conta...' : 'Registrar' }}</span>
+        <lucide-icon name="ArrowRight" class="w-5 h-5 flex"></lucide-icon>
+      </button>
+    </form>
+
+    <p class="mt-8 text-center text-sm text-on-surface-variant">
+      Já tem uma conta? <a routerLink="/login" class="text-primary font-bold hover:underline">Entrar</a>
+    </p>
+  </div>
+</div>

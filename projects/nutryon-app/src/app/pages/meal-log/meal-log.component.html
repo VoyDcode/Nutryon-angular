@@ -1,0 +1,128 @@
+<div class="bg-surface min-h-screen pb-32 animate-fade-in-up">
+  <header class="fixed top-0 w-full z-50 glass-header ambient-shadow">
+    <div class="flex justify-between items-center px-6 py-4 w-full max-w-lg mx-auto">
+      <a routerLink="/" class="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-surface-container-low transition-colors">
+        <lucide-icon name="ChevronLeft" class="w-6 h-6 text-primary flex"></lucide-icon>
+      </a>
+      <h1 class="font-bold text-xl tracking-tight text-primary">Refeições</h1>
+      <button 
+        (click)="handleOpenModal()"
+        class="w-10 h-10 bg-primary text-white flex items-center justify-center rounded-xl hover:brightness-110 transition-all active:scale-95"
+      >
+        <lucide-icon name="Plus" class="w-6 h-6 flex"></lucide-icon>
+      </button>
+    </div>
+  </header>
+
+  <main class="pt-24 px-6 max-w-lg mx-auto space-y-6">
+    <div class="relative">
+      <lucide-icon name="Search" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-on-surface-variant/40 flex"></lucide-icon>
+      <input 
+        type="text" 
+        placeholder="Pesquisar alimento..." 
+        class="w-full bg-surface-container-low border-0 pl-12 pr-4 py-4 rounded-2xl focus:ring-2 focus:ring-primary/20 transition-all outline-none"
+      />
+    </div>
+
+    <div class="space-y-4">
+      <p *ngIf="isLoading" class="text-center py-10 text-on-surface-variant">Carregando...</p>
+      
+      <div *ngIf="!isLoading && meals.length === 0" class="text-center py-20 opacity-50">
+        <lucide-icon name="Plus" class="w-12 h-12 mx-auto mb-4 text-primary flex"></lucide-icon>
+        <p>Nenhuma refeição registrada.</p>
+      </div>
+
+      <div *ngIf="!isLoading && meals.length > 0">
+        <div *ngFor="let meal of meals" class="bg-surface-container-lowest mb-4 p-5 rounded-2xl ambient-shadow flex items-center gap-4 group">
+          <div class="flex-grow">
+            <div class="flex justify-between items-start mb-1">
+              <h3 class="font-bold text-lg">{{ meal.name }}</h3>
+              <span class="text-primary font-bold">{{ meal.kcal }} kcal</span>
+            </div>
+            <div class="flex gap-3 text-[11px] font-bold text-on-surface-variant uppercase">
+              <span>P: {{ meal.protein }}g</span>
+              <span>C: {{ meal.carbs }}g</span>
+              <span>G: {{ meal.fat }}g</span>
+            </div>
+          </div>
+          <div class="flex flex-col gap-2 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity">
+            <button 
+              (click)="handleOpenModal(meal)"
+              class="p-2 text-primary hover:bg-primary/10 rounded-lg transition-colors"
+            >
+              <lucide-icon name="Edit2" class="w-4 h-4 flex"></lucide-icon>
+            </button>
+            <button 
+              (click)="handleDelete(meal.id)"
+              class="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+            >
+              <lucide-icon name="Trash2" class="w-4 h-4 flex"></lucide-icon>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Modal for Add/Edit -->
+  <div *ngIf="isModalOpen" class="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-on-surface/20 backdrop-blur-sm">
+    <div class="bg-white w-full max-w-md rounded-3xl p-8 ambient-shadow animate-fade-in-up">
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="text-xl font-bold">{{ editingMeal ? 'Editar Refeição' : 'Nova Refeição' }}</h2>
+        <button (click)="handleCloseModal()" class="p-2 hover:bg-surface-container-low rounded-full">
+          <lucide-icon name="X" class="w-6 h-6 flex"></lucide-icon>
+        </button>
+      </div>
+
+      <form (ngSubmit)="handleSubmit()" class="space-y-4">
+        <div class="space-y-1">
+          <label class="text-xs font-bold text-on-surface-variant">Nome</label>
+          <input 
+            type="text" required [(ngModel)]="formData.name" name="name"
+            class="w-full bg-surface-container-low border-0 px-4 py-3 rounded-xl focus:ring-2 focus:ring-primary/20 outline-none"
+          />
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+          <div class="space-y-1">
+            <label class="text-xs font-bold text-on-surface-variant">Calorias (kcal)</label>
+            <input 
+              type="number" required [(ngModel)]="formData.kcal" name="kcal"
+              class="w-full bg-surface-container-low border-0 px-4 py-3 rounded-xl focus:ring-2 focus:ring-primary/20 outline-none"
+            />
+          </div>
+          <div class="space-y-1">
+            <label class="text-xs font-bold text-on-surface-variant">Proteína (g)</label>
+            <input 
+              type="number" required [(ngModel)]="formData.protein" name="protein"
+              class="w-full bg-surface-container-low border-0 px-4 py-3 rounded-xl focus:ring-2 focus:ring-primary/20 outline-none"
+            />
+          </div>
+          <div class="space-y-1">
+            <label class="text-xs font-bold text-on-surface-variant">Carbos (g)</label>
+            <input 
+              type="number" required [(ngModel)]="formData.carbs" name="carbs"
+              class="w-full bg-surface-container-low border-0 px-4 py-3 rounded-xl focus:ring-2 focus:ring-primary/20 outline-none"
+            />
+          </div>
+          <div class="space-y-1">
+            <label class="text-xs font-bold text-on-surface-variant">Gordura (g)</label>
+            <input 
+              type="number" required [(ngModel)]="formData.fat" name="fat"
+              class="w-full bg-surface-container-low border-0 px-4 py-3 rounded-xl focus:ring-2 focus:ring-primary/20 outline-none"
+            />
+          </div>
+        </div>
+
+        <button 
+          type="submit"
+          class="w-full primary-gradient py-4 rounded-2xl text-white font-bold mt-4 shadow-lg shadow-primary/20 flex items-center justify-center gap-2 outline-none"
+        >
+          <lucide-icon name="Check" class="w-5 h-5 flex"></lucide-icon>
+          Salvar
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <app-bottom-nav active="meals"></app-bottom-nav>
+</div>
