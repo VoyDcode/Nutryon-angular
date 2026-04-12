@@ -8,8 +8,10 @@ import { environment } from '../../../environments/environment';
   providedIn: 'root'
 })
 export class ApiService {
+  
+
   private apiUrl = environment.apiUrl;
-  private authUrl = '/auth'; // Proxy maps /auth exactly
+  private authUrl = environment.authUrl;
 
   constructor(private http: HttpClient) { }
 
