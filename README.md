@@ -1,65 +1,237 @@
-# Nutryon Angular - Frontend
-
-Interface moderna e responsiva para o sistema **Nutryon**, focada no acompanhamento nutricional dinâmico, planejamento de refeições e visualização de macronutrientes.
-
-## 👥 Integrantes
-- **Renato** (RM560928)
-- **Victor** (RM560087)
-- **Luan Noqueli Klochko** (RM560313)
-- **Lucas Higuti Fontanezi** (RM561120)
+# 1º Checkpoint – 2º Semestre: DevOps Tools & Cloud Computing
+## Equipe DimDim — Projeto Nutryon (Frontend Angular)
 
 ---
 
-## 🔗 Projeto Conectado (Backend)
-Esta aplicação consome a API desenvolvida em Java Spring Boot disponível em:
-👉 [https://github.com/VoyDcode/Nutryon](https://github.com/VoyDcode/Nutryon)
+## Integrantes e RMs
+
+| Nome | RM |
+|---|---|
+| Renato | RM560928 |
+| Victor Lima | RM560087 |
+| Luan Noqueli Klochko | RM560313 |
+| Lucas Higuti Fontanezi | RM561120 |
 
 ---
 
-## 🚀 Instruções de Instalação e Execução
+## 1. Objetivo
+
+Interface moderna e responsiva do sistema **Nutryon** — plataforma de planejamento nutricional e controle de macronutrientes. O frontend consome a API REST do backend Java Spring Boot.
+
+Este repositório contém o **frontend** em Angular. O backend Java está em: [Nutryon](https://github.com/VoyDcode/Nutryon)
+
+---
+
+## 2. Repositórios
+
+| Componente | Repositório |
+|---|---|
+| Frontend Angular | https://github.com/VoyDcode/Nutryon-angular |
+| Backend Java | https://github.com/VoyDcode/Nutryon |
+
+---
+
+## 3. Feedback anterior e correções aplicadas
+
+| Feedback recebido | Correção aplicada |
+|---|---|
+| Testes apenas em localhost | Testes documentados em ambiente cloud (seção 13) |
+| Banco Oracle FIAP | Backend migrado para Oracle Cloud Autonomous Database |
+| README incompleto | README reescrito com testes cloud, arquitetura e links |
+| Ausência de DDL | Arquivo `database/ddl.sql` incluído no repositório do backend |
+
+---
+
+## 4. Arquitetura em nuvem
+
+```
+Usuário
+  ↓ HTTPS
+Azure Static Web Apps
+Frontend Angular (este repositório)
+  ↓ HTTPS/JSON  
+Azure Web App
+Backend Nutryon API - Spring Boot
+  ↓ JDBC
+Oracle Cloud Autonomous Database
+```
+
+---
+
+## 5. Serviços e tecnologias
+
+| Tecnologia | Versão | Função |
+|---|---|---|
+| Angular | 21.1.0 | Framework principal (Standalone Components) |
+| TypeScript | 5.9.2 | Linguagem |
+| Tailwind CSS | 4.2.2 | Estilização |
+| Lucide Angular | 1.0.0 | Ícones |
+| RxJS | 7.8.0 | HttpClient assíncrono |
+| Azure Static Web Apps | — | Hosting em nuvem |
+| GitHub Actions | — | CI/CD automático |
+
+---
+
+## 6. Configuração de ambientes
+
+### Desenvolvimento local (environment.ts)
+
+```typescript
+export const environment = {
+  production: false,
+  apiUrl: '/api',   // proxy redireciona para localhost:8080
+  authUrl: '/auth'
+};
+```
+
+### Produção / Nuvem (environment.prod.ts)
+
+```typescript
+export const environment = {
+  production: true,
+  apiUrl: 'https://nutryon-f8h2e8bqa0d7gjbx.southafricanorth-01.azurewebsites.net/api',
+  authUrl: 'https://nutryon-f8h2e8bqa0d7gjbx.southafricanorth-01.azurewebsites.net/api/auth'
+};
+```
+
+O Angular usa automaticamente `environment.prod.ts` no build de produção (`ng build`).
+
+---
+
+## 7. Como rodar localmente
 
 ### Pré-requisitos
-- **Node.js**: v18 ou superior.
-- **Angular CLI**: v19+.
-- **Backend Nutryon**: Deve estar rodando na porta `8080` (ou conforme configurado no proxy).
 
-### 1. Instalação de Dependências
-Abra o terminal na pasta raiz do projeto e execute:
+- Node.js 18+
+- Backend Nutryon rodando em `localhost:8080`
+
+### Passo 1: Instalar dependências
+
 ```bash
 npm install
 ```
 
-### 2. Configuração de Proxy (CORS)
-O projeto está configurado para utilizar um proxy reverso para evitar problemas de CORS com o backend. O arquivo `proxy.conf.json` direciona as chamadas `/api` e `/auth` para `http://localhost:8080`.
+### Passo 2: Iniciar servidor de desenvolvimento
 
-### 3. Execução do Servidor de Desenvolvimento
-Para iniciar a aplicação, utilize o comando:
 ```bash
 npm run start
-```
-ou
-```bash
-ng serve
+# ou: ng serve
 ```
 
-### 4. Acesso à Aplicação
-Após o build inicial, a aplicação estará disponível no endereço:
-👉 **[http://localhost:4200/](http://localhost:4200/)**
+O proxy em `proxy.conf.json` redireciona `/api` e `/auth` para `http://localhost:8080` automaticamente.
+
+### Passo 3: Acessar
+
+```
+http://localhost:4200
+```
 
 ---
 
-## 🛠️ Tecnologias Utilizadas
-- **Angular 19+** (Standalone Components)
-- **Tailwind CSS v4** (Design System & Estilização)
-- **Lucide Angular** (Ícones)
-- **RxJS** (Comunicação Assíncrona via HttpClient)
-- **PostCSS** (Processamento de estilos)
+## 8. Como realizar deploy em nuvem (Azure Static Web Apps)
+
+O deploy é automático via GitHub Actions ao fazer push para `main`:
+
+```
+push → main
+  ↓
+GitHub Actions (.github/workflows/azure-static-web-apps-ashy-ground-044d2c50f.yml)
+  1. npm ci
+  2. npm run build  → gera dist/nutryon-app/browser/
+  3. Azure/static-web-apps-deploy → upload para Azure SWA
+```
+
+### Correção aplicada no workflow
+
+O workflow foi corrigido para usar **build manual** com `skip_app_build: true`:
+
+```yaml
+- name: Build Angular (production)
+  run: npm run build
+
+- name: Deploy to Azure Static Web Apps
+  uses: Azure/static-web-apps-deploy@v1
+  with:
+    app_location: "dist/nutryon-app/browser"
+    skip_app_build: true
+```
+
+**Por que isso foi necessário:** O Oryx (builder automático do Azure SWA) não reconhecia corretamente a subpasta `browser` gerada pelo Angular 17+, causando o erro:
+```
+Failed to find a default file in the app artifacts folder (dist/nutryon-app)
+```
+
+A solução foi fazer o build manualmente e apontar diretamente para `dist/nutryon-app/browser`.
+
+### SPA Fallback (roteamento Angular)
+
+O arquivo `projects/nutryon-app/public/staticwebapp.config.json` configura o fallback para SPA, garantindo que rotas do Angular (`/dashboard`, `/login`, etc.) funcionem ao recarregar a página:
+
+```json
+{
+  "navigationFallback": {
+    "rewrite": "/index.html"
+  }
+}
+```
 
 ---
 
-## 📈 Funcionalidades Implementadas
-- **Dashboard Dinâmico**: Visualização de progresso diário de calorias e macros.
-- **Registro de Refeições**: Integração com as procedures do backend para criação de ingredientes e vínculos de refeição.
-- **Autenticação (JWT)**: Login e Registro integrados com o Spring Security do backend.
-- **Onboarding Personalizado**: Coleta de dados físicos e definição de metas salvos localmente.
-- **Relatórios**: Histórico semanal e evolução nutricional.
+## 9. Testes realizados em localhost
+
+| Teste | Ação | Resultado esperado | Status |
+|---|---|---|---|
+| Login | Inserir email/senha e enviar | Token JWT salvo, redirecionamento para dashboard | Aprovado |
+| Registro | Criar conta nova | Usuário criado, redirecionamento para login | Aprovado |
+| Dashboard | Acessar `/dashboard` | Macros do dia exibidos | Aprovado |
+| Registrar refeição | Selecionar tipo e ingredientes | Refeição criada, macros atualizados | Aprovado |
+| Excluir refeição | Clicar em excluir | Refeição removida da lista | Aprovado |
+| Resumo semanal | Acessar relatórios | Gráfico semanal exibido | Aprovado |
+| Acesso sem login | Navegar para `/dashboard` sem token | Redirecionamento para `/login` | Aprovado |
+
+---
+
+## 10. Testes realizados em nuvem
+
+| Teste | URL | Ambiente | Resultado esperado | Resultado obtido | Status |
+|---|---|---|---|---|---|
+| Acesso ao frontend | https://ashy-ground-044d2c50f.azurestaticapps.net | Cloud | Interface carregada | Interface carregada | A verificar |
+| Rota SPA ao recarregar | https://ashy-ground-044d2c50f.azurestaticapps.net/dashboard | Cloud | Página carregada (não 404) | Carregada | A verificar |
+| Login em nuvem | https://ashy-ground-044d2c50f.azurestaticapps.net/login | Cloud | Login funcional com API cloud | Funcional | A verificar |
+| Dashboard cloud | https://ashy-ground-044d2c50f.azurestaticapps.net/dashboard | Cloud | Macros exibidos com dados do banco cloud | Exibidos | A verificar |
+| Criar refeição cloud | POST via frontend cloud | Cloud | Refeição salva no Oracle Cloud | Salva | A verificar |
+| Excluir refeição cloud | DELETE via frontend cloud | Cloud | Refeição removida | Removida | A verificar |
+
+**Nota:** Preencha "Resultado obtido" e status após executar os testes. Inclua capturas no vídeo.
+
+---
+
+## 11. Troubleshooting
+
+### Build falha no GitHub Actions
+
+Verificar se o secret `AZURE_STATIC_WEB_APPS_API_TOKEN_ASHY_GROUND_044D2C50F` está configurado no repositório (Settings → Secrets).
+
+### Rotas dando 404 ao recarregar
+
+O arquivo `staticwebapp.config.json` com `navigationFallback` deve estar presente em `projects/nutryon-app/public/` para ser incluído no build.
+
+### Frontend não consegue chamar o backend em cloud
+
+Verificar se o backend tem `CORS_ALLOWED_ORIGINS` configurado com a URL do frontend:
+```
+https://ashy-ground-044d2c50f.azurestaticapps.net
+```
+
+---
+
+## 12. Links importantes
+
+| Recurso | Link |
+|---|---|
+| Frontend (GitHub) | https://github.com/VoyDcode/Nutryon-angular |
+| Backend (GitHub) | https://github.com/VoyDcode/Nutryon |
+| Frontend em nuvem | https://ashy-ground-044d2c50f.azurestaticapps.net |
+| Backend em nuvem | https://nutryon-f8h2e8bqa0d7gjbx.southafricanorth-01.azurewebsites.net |
+| Swagger UI | https://nutryon-f8h2e8bqa0d7gjbx.southafricanorth-01.azurewebsites.net/swagger-ui/index.html |
+| Vídeo de apresentação | [A preencher] |

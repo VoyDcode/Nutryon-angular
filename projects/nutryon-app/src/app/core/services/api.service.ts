@@ -27,7 +27,8 @@ export class ApiService {
   }
 
   login(credentials: any): Observable<{ token: string }> {
-    return this.http.post<{ token: string }>(`${this.authUrl}/login`, credentials);
+    const payload = { email: credentials.email, senha: credentials.password };
+    return this.http.post<{ token: string }>(`${this.authUrl}/login`, payload);
   }
 
   getProfile(): Observable<User> {
