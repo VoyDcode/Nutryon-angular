@@ -74,8 +74,8 @@ stages:
                   exit 1
                 fi
 
+                echo "Token preview: ${SWA_TOKEN:0:8}..."
                 echo "Token obtido. Iniciando deploy..."
                 npx --yes @azure/static-web-apps-cli deploy \
                   "$(Pipeline.Workspace)/frontend-dist" \
-                  --deployment-token "$SWA_TOKEN" \
-                  --env production
+                  --deployment-token "$SWA_TOKEN"
