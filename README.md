@@ -130,38 +130,37 @@ http://localhost:4200
 
 ## 8. Como realizar deploy em nuvem (Azure Static Web Apps)
 
-O deploy é automático via GitHub Actions ao fazer push para `main`:
+O deploy é automático via **Azure DevOps Pipelines** ao fazer push para `main` (`azure-pipelines.yml`):
 
 ```
 push → main
   ↓
-GitHub Actions (.github/workflows/azure-static-web-apps-ashy-ground-044d2c50f.yml)
-  1. npm ci
-  2. npm run build  → gera dist/nutryon-app/browser/
-  3. Azure/static-web-apps-deploy → upload para Azure SWA
+Azure DevOps CI stage
+  1. NodeTool@0 (Node 22)
+  2. npm ci → instala dependências
+  3. npm run build → gera dist/nutryon-app/browser/ (environment.prod.ts)
+  4. PublishBuildArtifacts → artefato "frontend-dist"
+  ↓
+Azure DevOps CD stage (environment "producao" — requer aprovação manual)
+  5. AzureCLI@2 → obtém token SWA via az staticwebapp secrets list
+  6. SWA CLI v1.1.7 → deploy do artefato no Azure Static Web Apps
 ```
 
-### Correção aplicada no workflow
+### Por que SWA CLI v1.1.7
 
-O workflow foi corrigido para usar **build manual** com `skip_app_build: true`:
+O `AzureStaticWebApp@0` (task oficial) roda em container Docker e não acessa o caminho do artefato publicado. A solução foi usar o SWA CLI v1.1.7 diretamente — a versão 1.x usa autenticação clássica por token; a v2.x requer GitHub OIDC.
 
-```yaml
-- name: Build Angular (production)
-  run: npm run build
+### SPA Fallback (roteamento Angular)
 
-- name: Deploy to Azure Static Web Apps
-  uses: Azure/static-web-apps-deploy@v1
-  with:
-    app_location: "dist/nutryon-app/browser"
-    skip_app_build: true
+O arquivo `projects/nutryon-app/public/staticwebapp.config.json` configura o fallback para SPA, garantindo que rotas do Angular (`/dashboard`, `/login`, etc.) funcionem ao recarregar a página:
+
+```json
+{
+  "navigationFallback": {
+    "rewrite": "/index.html"
+  }
+}
 ```
-
-**Por que isso foi necessário:** O Oryx (builder automático do Azure SWA) não reconhecia corretamente a subpasta `browser` gerada pelo Angular 17+, causando o erro:
-```
-Failed to find a default file in the app artifacts folder (dist/nutryon-app)
-```
-
-A solução foi fazer o build manualmente e apontar diretamente para `dist/nutryon-app/browser`.
 
 ### SPA Fallback (roteamento Angular)
 
