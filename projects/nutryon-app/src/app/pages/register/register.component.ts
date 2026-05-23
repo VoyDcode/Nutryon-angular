@@ -52,7 +52,7 @@ export class RegisterComponent implements OnInit {
     this.apiService.register(data).subscribe({
       next: () => {
         // Automatically login after successful registration since backend returns 200 OK
-        this.apiService.login({ email: data.email, senha: data.password }).subscribe({
+        this.apiService.login({ email: data.email, password: data.password }).subscribe({
            next: (res: any) => {
               const mockUser = { 
                 id: '1', name: data.name, email: data.email, 
