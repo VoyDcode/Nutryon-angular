@@ -44,38 +44,16 @@ stages:
             inputs:
               versionSpec: '22.x'
           - task: AzureCLI@2
-            displayName: 'Deploy via SWA CLI (token do Azure)'
+            displayName: 'Deploy no Azure Static Web Apps'
             inputs:
               azureSubscription: 'Azure-FIAP'
               scriptType: 'bash'
               scriptLocation: 'inlineScript'
               inlineScript: |
-                echo "=== Static Web Apps acessiveis ==="
-                az staticwebapp list --query "[].{name:name, rg:resourceGroup}" -o table
-
-                echo "=== Buscando token (nutryon-rg) ==="
                 SWA_TOKEN=$(az staticwebapp secrets list \
                   --name Nutryon-angular \
                   --resource-group nutryon-rg \
-                  --query "properties.apiKey" -o tsv 2>/dev/null)
-                echo "Tamanho token (nutryon-rg): ${#SWA_TOKEN}"
-
-                if [ -z "$SWA_TOKEN" ]; then
-                  echo "=== Buscando token (DefaultResourceGroup-CQ) ==="
-                  SWA_TOKEN=$(az staticwebapp secrets list \
-                    --name Nutryon-angular \
-                    --resource-group DefaultResourceGroup-CQ \
-                    --query "properties.apiKey" -o tsv 2>/dev/null)
-                  echo "Tamanho token (DefaultResourceGroup-CQ): ${#SWA_TOKEN}"
-                fi
-
-                if [ -z "$SWA_TOKEN" ]; then
-                  echo "ERRO: Token vazio. Servico nao encontrado."
-                  exit 1
-                fi
-
-                echo "Token preview: ${SWA_TOKEN:0:8}..."
-                echo "Token obtido. Iniciando deploy..."
+                  --query "properties.apiKey" -o tsv)
                 npx --yes @azure/static-web-apps-cli@1.1.7 deploy \
                   "$(Pipeline.Workspace)/frontend-dist" \
                   --deployment-token "$SWA_TOKEN"
