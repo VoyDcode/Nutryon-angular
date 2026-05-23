@@ -50,11 +50,31 @@ stages:
               scriptType: 'bash'
               scriptLocation: 'inlineScript'
               inlineScript: |
+                echo "=== Static Web Apps acessiveis ==="
+                az staticwebapp list --query "[].{name:name, rg:resourceGroup}" -o table
+
+                echo "=== Buscando token (nutryon-rg) ==="
                 SWA_TOKEN=$(az staticwebapp secrets list \
                   --name Nutryon-angular \
                   --resource-group nutryon-rg \
-                  --query "properties.apiKey" -o tsv)
-                echo "Token obtido com sucesso"
+                  --query "properties.apiKey" -o tsv 2>/dev/null)
+                echo "Tamanho token (nutryon-rg): ${#SWA_TOKEN}"
+
+                if [ -z "$SWA_TOKEN" ]; then
+                  echo "=== Buscando token (DefaultResourceGroup-CQ) ==="
+                  SWA_TOKEN=$(az staticwebapp secrets list \
+                    --name Nutryon-angular \
+                    --resource-group DefaultResourceGroup-CQ \
+                    --query "properties.apiKey" -o tsv 2>/dev/null)
+                  echo "Tamanho token (DefaultResourceGroup-CQ): ${#SWA_TOKEN}"
+                fi
+
+                if [ -z "$SWA_TOKEN" ]; then
+                  echo "ERRO: Token vazio. Servico nao encontrado."
+                  exit 1
+                fi
+
+                echo "Token obtido. Iniciando deploy..."
                 npx --yes @azure/static-web-apps-cli deploy \
                   "$(Pipeline.Workspace)/frontend-dist" \
                   --deployment-token "$SWA_TOKEN" \
