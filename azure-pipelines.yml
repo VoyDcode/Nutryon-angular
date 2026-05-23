@@ -46,7 +46,7 @@ stages:
           - task: AzureCLI@2
             displayName: 'Deploy via SWA CLI (token do Azure)'
             inputs:
-              azureSubscription: '$(AZURE_SUBSCRIPTION)'
+              azureSubscription: 'Azure-FIAP'
               scriptType: 'bash'
               scriptLocation: 'inlineScript'
               inlineScript: |
