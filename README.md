@@ -68,7 +68,7 @@ Oracle Cloud Autonomous Database
 | Lucide Angular | 1.0.0 | Ícones |
 | RxJS | 7.8.0 | HttpClient assíncrono |
 | Azure Static Web Apps | — | Hosting em nuvem |
-| GitHub Actions | — | CI/CD automático |
+| Azure DevOps Pipelines | — | CI/CD com approval gate (build + deploy) |
 
 ---
 
