@@ -1,4 +1,4 @@
-# 3º Sprint – 2º Semestre: Java & DevOps Tools e Cloud Computing
+# 4º Sprint – 2º Semestre: Java & DevOps Tools e Cloud Computing
 ## Projeto Nutryon (Frontend Angular)
 
 ---
@@ -233,4 +233,4 @@ https://ashy-ground-044d2c50f.azurestaticapps.net
 | Frontend em nuvem | https://ashy-ground-044d2c50f.azurestaticapps.net |
 | Backend em nuvem | https://nutryon-f8h2e8bqa0d7gjbx.southafricanorth-01.azurewebsites.net |
 | Swagger UI | https://nutryon-f8h2e8bqa0d7gjbx.southafricanorth-01.azurewebsites.net/swagger-ui/index.html |
-| Vídeo de apresentação | [A preencher] |
+| Vídeo de apresentação | https://youtu.be/cGqSQxjYnY0 |
